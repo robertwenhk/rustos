@@ -1,19 +1,31 @@
 #![no_std] // bare metal, don't use std library
 #![no_main] // define our own entry
+#![feature(custom_test_frameworks)]
+#![test_runner(rustos::test_runner)]
+#![reexport_test_harness_main = "test_main"]
 
-mod vga_buffer;
 use core::panic::PanicInfo;
+use rustos::println;
 
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
-    println!("Hello World from _start.");
-    println!("i32 {} and float {}.", 4, 4.0 / 6.0);
-
-    loop {}
-}
-
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
     loop {}
+}
+
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    rustos::test_panic_handler(info)
+}
+
+#[no_mangle]
+pub extern "C" fn _start() -> ! {
+    println!("Hello World{}", "!");
+
+    #[cfg(test)]
+    test_main();
+
+    loop{}
 }
