@@ -5,7 +5,7 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
-use rustos::{print, println};
+use rustos::println;
 
 #[cfg(not(test))]
 #[panic_handler]
