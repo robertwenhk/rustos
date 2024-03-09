@@ -5,13 +5,13 @@
 // #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
-use rustos::{QemuExitCode, exit_qemu, serial_println, serial_print, Red, Green};
+use rustos::{QemuExitCode, exit_qemu, serial_println, serial_print, Red, Green, hlt_loop};
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     serial_println!("{}", Green("[ok]"));
     exit_qemu(QemuExitCode::Success);
-    loop {}
+    hlt_loop()
 }
 
 #[no_mangle]
@@ -20,7 +20,7 @@ pub extern "C" fn _start() -> ! {
     serial_println!("{}", Red("[test did not panic]"));
     exit_qemu(QemuExitCode::Failed);
 
-    loop {};
+    hlt_loop()
 }
 
 // pub fn test_runner(tests: &[&dyn Fn()]) {

@@ -5,13 +5,13 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
-use rustos::println;
+use rustos::{println, hlt_loop};
 
 #[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    hlt_loop()
 }
 
 #[cfg(test)]
@@ -26,12 +26,9 @@ pub extern "C" fn _start() -> ! {
 
     rustos::init();
 
-    // Invoke a breakpoint exception
-    x86_64::instructions::interrupts::int3();
-
     #[cfg(test)]
     test_main();
 
     println!("If you see this, the program does not crash!");
-    loop{}
+    hlt_loop()
 }

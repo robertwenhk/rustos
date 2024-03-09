@@ -6,7 +6,7 @@ use core::panic::PanicInfo;
 use lazy_static::lazy_static;
 use x86_64::structures::idt::InterruptDescriptorTable;
 use x86_64::structures::idt::InterruptStackFrame;
-use rustos::{Green, exit_qemu, QemuExitCode, serial_print, serial_println};
+use rustos::{Green, exit_qemu, QemuExitCode, serial_print, serial_println, hlt_loop};
 
 
 lazy_static! {
@@ -32,7 +32,7 @@ extern "x86-interrupt" fn test_double_fault_handler(
     serial_println!("{}", Green("[ok]"));
     exit_qemu(QemuExitCode::Success);
 
-    loop {}
+    hlt_loop()
 }
 
 #[panic_handler]
